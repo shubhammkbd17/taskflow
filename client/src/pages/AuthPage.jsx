@@ -33,6 +33,9 @@ export default function AuthPage({ defaultTab = "login" }) {
     }
   };
 
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const googleConfigured = googleClientId && !googleClientId.includes("your_google_client_id");
+
   // Google One-Tap callback
   const handleGoogle = async (credential) => {
     setLoading(true);
@@ -50,9 +53,9 @@ export default function AuthPage({ defaultTab = "login" }) {
 
   // Render Google button div
   const initGoogle = (el) => {
-    if (!el || !window.google) return;
+    if (!el || !window.google || !googleConfigured) return;
     window.google.accounts.id.initialize({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      client_id: googleClientId,
       callback: (res) => handleGoogle(res.credential),
     });
     window.google.accounts.id.renderButton(el, {

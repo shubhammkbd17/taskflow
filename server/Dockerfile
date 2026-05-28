@@ -1,13 +1,14 @@
-FROM node:20
-
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-
-RUN npm install
+RUN npm ci --only=production
 
 COPY . .
 
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app /app
+ENV NODE_ENV=production
 EXPOSE 5001
-
-CMD ["npm", "run", "dev"]
+CMD ["node", "index.js"]

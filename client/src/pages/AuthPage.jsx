@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
 import s from "./AuthPage.module.css";
 
 export default function AuthPage({ defaultTab = "login" }) {
@@ -51,16 +52,12 @@ export default function AuthPage({ defaultTab = "login" }) {
     }
   };
 
-  // Render Google button div
-  const initGoogle = (el) => {
-    if (!el || !window.google || !googleConfigured) return;
-    window.google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: (res) => handleGoogle(res.credential),
-    });
-    window.google.accounts.id.renderButton(el, {
-      theme: "outline", size: "large", width: 276, text: "continue_with",
-    });
+  const handleGoogleSuccess = async (response) => {
+    if (!response?.credential) {
+      toast.error("Google sign-in failed");
+      return;
+    }
+    await handleGoogle(response.credential);
   };
 
   return (
@@ -115,7 +112,20 @@ export default function AuthPage({ defaultTab = "login" }) {
         </form>
 
         <div className={s.divider}><span>or continue with</span></div>
-        <div ref={initGoogle} className={s.googleBtn} />
+        <div className={s.googleBtn}>
+          {googleConfigured ? (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google sign-in failed")}
+              size="large"
+              text="continue_with"
+            />
+          ) : (
+            <button className={`btn-secondary ${s.disabledGoogle}`} disabled>
+              Google sign-in unavailable
+            </button>
+          )}
+        </div>
 
         <p className={s.switchText}>
           {tab === "login" ? (

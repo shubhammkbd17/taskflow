@@ -92,8 +92,9 @@ const googleAuth = async (req, res) => {
     const token = signToken(user._id);
     res.json({ token, user });
   } catch (err) {
-    console.error("Google auth error:", err.message);
-    res.status(401).json({ message: "Google authentication failed." });
+    console.error("Google auth error:", err);
+    const msg = err?.message || "Google authentication failed.";
+    res.status(401).json({ message: `Google authentication failed: ${msg}` });
   }
 };
 

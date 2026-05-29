@@ -3,22 +3,22 @@ pipeline {
 
     stages {
 
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/shubhammkbd17/taskflow.git'
+            }
+        }
+
+        stage('CI/CD Test Change') {
+            steps {
+                echo 'TaskFlow CI/CD Pipeline Updated'
+            }
+        }
+
         stage('Verify Repository') {
             steps {
                 sh 'pwd'
                 sh 'ls -la'
-            }
-        }
-
-        stage('Build Simulation') {
-            steps {
-                echo 'Docker build simulated'
-            }
-        }
-
-        stage('Deploy Simulation') {
-            steps {
-                echo 'Deployment simulated'
             }
         }
     }

@@ -3,9 +3,10 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
+        stage('Verify Repository') {
             steps {
-                git 'https://github.com/shubhammkbd17/taskflow.git'
+                sh 'pwd'
+                sh 'ls -la'
             }
         }
 
@@ -25,6 +26,15 @@ pipeline {
             steps {
                 sh 'docker ps'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check console output.'
         }
     }
 }

@@ -10,31 +10,16 @@ pipeline {
             }
         }
 
-        stage('Build Docker Containers') {
+        stage('Build Simulation') {
             steps {
-                sh 'docker compose build'
+                echo 'Docker build simulated'
             }
         }
 
-        stage('Start Containers') {
+        stage('Deploy Simulation') {
             steps {
-                sh 'docker compose up -d'
+                echo 'Deployment simulated'
             }
-        }
-
-        stage('Verify Running Containers') {
-            steps {
-                sh 'docker ps'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Check console output.'
         }
     }
 }

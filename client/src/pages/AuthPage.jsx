@@ -20,9 +20,10 @@ export default function AuthPage({ defaultTab = "login" }) {
     setLoading(true);
     try {
       const endpoint = tab === "login" ? "/auth/login" : "/auth/signup";
+      const normalizedEmail = form.email.trim().toLowerCase();
       const payload  = tab === "login"
-        ? { email: form.email, password: form.password }
-        : { name: form.name, email: form.email, password: form.password };
+        ? { email: normalizedEmail, password: form.password }
+        : { name: form.name.trim(), email: normalizedEmail, password: form.password };
       const { data } = await api.post(endpoint, payload);
       saveAuth(data.token, data.user);
       toast.success(tab === "login" ? "Welcome back!" : "Account created!");
@@ -86,8 +87,8 @@ export default function AuthPage({ defaultTab = "login" }) {
       {/* Right panel */}
       <div className={s.right}>
         <div className={s.tabs}>
-          <button className={`${s.tab} ${tab === "login" ? s.tabActive : ""}`} onClick={() => setTab("login")}>Sign in</button>
-          <button className={`${s.tab} ${tab === "signup" ? s.tabActive : ""}`} onClick={() => setTab("signup")}>Create account</button>
+          <button className={`${s.tab} ${tab === "login" ? s.tabActive : ""}`} onClick={() => { setForm({ name: "", email: "", password: "" }); setTab("login"); }}>Sign in</button>
+          <button className={`${s.tab} ${tab === "signup" ? s.tabActive : ""}`} onClick={() => { setForm({ name: "", email: "", password: "" }); setTab("signup"); }}>Create account</button>
         </div>
 
         <form onSubmit={handleSubmit} className={s.form}>

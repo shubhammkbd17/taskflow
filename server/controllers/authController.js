@@ -14,7 +14,13 @@ const signToken = (userId) =>
 // ── POST /api/auth/signup ────────────────────────────────────────────────────
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const name = String(req.body.name || "").trim();
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = req.body.password;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email, and password are required." });
+    }
 
     const existing = await User.findOne({ email });
     if (existing) {
@@ -36,7 +42,8 @@ const signup = async (req, res) => {
 // ── POST /api/auth/login ─────────────────────────────────────────────────────
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const password = req.body.password;
 
     const user = await User.findOne({ email });
     if (!user || !user.password) {
